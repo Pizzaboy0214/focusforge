@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FocusForge</title>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+:root {
+    --bg: #08090d;
+    --panel: #11131a;
+    --panel2: #171923;
+    --border: #272a35;
+    --text: #f4f5f7;
+    --muted: #858a99;
+    --accent: #8b5cf6;
+    --accent2: #c084fc;
+    --danger: #fb7185;
+    --success: #4ade80;
+}
+
+body {
+    min-height: 100vh;
+    background:
+        radial-gradient(circle at 15% 10%, rgba(139,92,246,.14), transparent 30%),
+        radial-gradient(circle at 85% 80%, rgba(192,132,252,.08), transparent 30%),
+        var(--bg);
+    color: var(--text);
+    font-family: Inter, sans-serif;
+}
+
+button,
+input,
+textarea {
+    font: inherit;
+}
+
+button {
+    cursor: pointer;
+}
+
+nav {
+    height: 72px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 6%;
+    backdrop-filter: blur(20px);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: rgba(8,9,13,.75);
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 800;
+    font-size: 20px;
+}
+
+.logo-mark {
+    width: 32px;
+    height: 32px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    display: grid;
+    place-items: center;
+    box-shadow: 0 0 30px rgba(139,92,246,.35);
+}
+
+.logo-mark::after {
+    content: "✦";
+    color: white;
+}
+
+.nav-date {
+    color: var(--muted);
+    font-size: 13px;
+}
+
+.container {
+    width: min(1200px, 90%);
+    margin: auto;
+    padding: 42px 0 70px;
+}
+
+.hero {
+    margin-bottom: 30px;
+}
+
+.eyebrow {
+    color: var(--accent2);
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+h1 {
+    font-size: clamp(32px, 5vw, 58px);
+    line-height: 1;
+    letter-spacing: -3px;
+}
+
+.subtitle {
+    color: var(--muted);
+    margin-top: 13px;
+    max-width: 600px;
+}
+
+.dashboard {
+    display: grid;
+    grid-template-columns: 1.4fr .8fr;
+    gap: 20px;
+}
+
+.card {
+    background: rgba(17,19,26,.82);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 24px;
+    box-shadow: 0 15px 50px rgba(0,0,0,.2);
+}
+
+.card-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.card-title h2 {
+    font-size: 16px;
+}
+
+.card-title span {
+    font-size: 12px;
+    color: var(--muted);
+}
+
+.task-input {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.task-input input {
+    flex: 1;
+    background: var(--panel2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    border-radius: 12px;
+    padding: 13px 15px;
+    outline: none;
+}
+
+.task-input input:focus {
+    border-color: var(--accent);
+}
+
+.primary {
+    border: 0;
+    border-radius: 12px;
+    padding: 0 18px;
+    background: linear-gradient(135deg, var(--accent), #7c3aed);
+    color: white;
+    font-weight: 700;
+}
+
+.task {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--border);
+    animation: slideIn .25s ease;
+}
+
+.task:last-child {
+    border-bottom: 0;
+}
+
+.check {
+    width: 20px;
+    height: 20px;
+    border-radius: 7px;
+    border: 1px solid #444856;
+    background: transparent;
+    flex-shrink: 0;
+}
+
+.task.done .check {
+    background: var(--success);
+    border-color: var(--success);
+}
+
+.task.done .check::after {
+    content: "✓";
+    color: #061008;
+    display: grid;
+    place-items: center;
+    font-size: 13px;
+    font-weight: 800;
+}
+
+.task.done .task-text {
+    text-decoration: line-through;
+    color: var(--muted);
+}
+
+.task-text {
+    flex: 1;
+    font-size: 14px;
+}
+
+.delete {
+    border: 0;
+    background: transparent;
+    color: #555966;
+    font-size: 18px;
+}
+
+.delete:hover {
+    color: var(--danger);
+}
+
+.timer {
+    text-align: center;
+    padding: 15px 0;
+}
+
+.time {
+    font-size: 65px;
+    font-weight: 800;
+    letter-spacing: -4px;
+    margin: 10px 0 20px;
+}
+
+.timer-controls {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+}
+
+.timer-controls button {
+    border: 1px solid var(--border);
+    background: var(--panel2);
+    color: var(--text);
+    border-radius: 10px;
+    padding: 9px 14px;
+}
+
+.timer-controls .start {
+    background: var(--accent);
+    border-color: var(--accent);
+}
+
+.stats {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.stat {
+    background: rgba(17,19,26,.82);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 22px;
+}
+
+.stat-label {
+    color: var(--muted);
+    font-size: 12px;
+}
+
+.stat-value {
+    font-size: 32px;
+    font-weight: 800;
+    margin-top: 8px;
+}
+
+.notes {
+    margin-top: 20px;
+}
+
+textarea {
+    width: 100%;
+    min-height: 150px;
+    resize: vertical;
+    background: var(--panel2);
+    border: 1px solid var(--border);
+    border-radius: 13px;
+    padding: 14px;
+    color: var(--text);
+    outline: none;
+}
+
+textarea:focus {
+    border-color: var(--accent);
+}
+
+.save-note {
+    margin-top: 10px;
+    padding: 10px 15px;
+    border: 0;
+    border-radius: 10px;
+    background: var(--panel2);
+    color: var(--text);
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(5px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (max-width: 800px) {
+    .dashboard {
+        grid-template-columns: 1fr;
+    }
+
+    .stats {
+        grid-template-columns: 1fr;
+    }
+
+    .time {
+        font-size: 55px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<nav>
+    <div class="logo">
+        <div class="logo-mark"></div>
+        FocusForge
+    </div>
+    <div class="nav-date" id="date"></div>
+</nav>
+
+<main class="container">
+
+    <section class="hero">
+        <div class="eyebrow">Command Center</div>
+        <h1>Build momentum.</h1>
+        <p class="subtitle">
+            Organize your tasks, enter deep focus, and keep your ideas in one place.
+        </p>
+    </section>
+
+    <section class="dashboard">
+
+        <div class="card">
+            <div class="card-title">
+                <h2>Today's missions</h2>
+                <span id="taskCount">0 tasks</span>
+            </div>
+
+            <div class="task-input">
+                <input
+                    id="taskInput"
+                    placeholder="What needs to get done?"
+                    onkeydown="if(event.key === 'Enter') addTask()"
+                >
+                <button class="primary" onclick="addTask()">Add</button>
+            </div>
+
+            <div id="taskList"></div>
+        </div>
+
+        <div class="card">
+            <div class="card-title">
+                <h2>Focus mode</h2>
+                <span>25 min session</span>
+            </div>
+
+            <div class="timer">
+                <div class="time" id="timer">25:00</div>
+
+                <div class="timer-controls">
+                    <button class="start" id="startBtn" onclick="toggleTimer()">
+                        Start
+                    </button>
+                    <button onclick="resetTimer()">Reset</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="stats">
+            <div class="stat">
+                <div class="stat-label">Completed</div>
+                <div class="stat-value" id="completed">0</div>
+            </div>
+
+            <div class="stat">
+                <div class="stat-label">Remaining</div>
+                <div class="stat-value" id="remaining">0</div>
+            </div>
+
+            <div class="stat">
+                <div class="stat-label">Focus sessions</div>
+                <div class="stat-value" id="sessions">0</div>
+            </div>
+        </div>
+
+    </section>
+
+    <section class="card notes">
+        <div class="card-title">
+            <h2>Quick notes</h2>
+            <span>Saved locally</span>
+        </div>
+
+        <textarea
+            id="notes"
+            placeholder="Ideas, reminders, things you don't want to forget..."
+        ></textarea>
+
+        <button class="save-note" onclick="saveNotes()">
+            Save notes
+        </button>
+    </section>
+
+</main>
+
+<script>
+const dateElement = document.getElementById("date");
+
+dateElement.textContent = new Date().toLocaleDateString(
+    undefined,
+    {
+        weekday: "long",
+        month: "long",
+        day: "numeric"
+    }
+);
+
+let tasks = JSON.parse(localStorage.getItem("focusforge_tasks")) || [];
+
+function saveTasks() {
+    localStorage.setItem("focusforge_tasks", JSON.stringify(tasks));
+}
+
+function renderTasks() {
+    const list = document.getElementById("taskList");
+    list.innerHTML = "";
+
+    tasks.forEach((task, index) => {
+        const div = document.createElement("div");
+
+        div.className = "task" + (task.done ? " done" : "");
+
+        div.innerHTML = `
+            <button class="check" onclick="toggleTask(${index})"></button>
+            <div class="task-text">${escapeHTML(task.text)}</div>
+            <button class="delete" onclick="deleteTask(${index})">×</button>
+        `;
+
+        list.appendChild(div);
+    });
+
+    updateStats();
+}
+
+function addTask() {
+    const input = document.getElementById("taskInput");
+    const text = input.value.trim();
+
+    if (!text) return;
+
+    tasks.push({
+        text: text,
+        done: false
+    });
+
+    input.value = "";
+    saveTasks();
+    renderTasks();
+}
+
+function toggleTask(index) {
+    tasks[index].done = !tasks[index].done;
+    saveTasks();
+    renderTasks();
+}
+
+function deleteTask(index) {
+    tasks.splice(index, 1);
+    saveTasks();
+    renderTasks();
+}
+
+function updateStats() {
+    const completed = tasks.filter(task => task.done).length;
+    const remaining = tasks.filter(task => !task.done).length;
+
+    document.getElementById("completed").textContent = completed;
+    document.getElementById("remaining").textContent = remaining;
+
+    document.getElementById("taskCount").textContent =
+        tasks.length + (tasks.length === 1 ? " task" : " tasks");
+}
+
+function escapeHTML(text) {
+    const div = document.createElement("div");
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+let seconds = 25 * 60;
+let timerRunning = false;
+let timerInterval;
+
+function updateTimer() {
+    const minutes = Math.floor(seconds / 60)
+        .toString()
+        .padStart(2, "0");
+
+    const secs = (seconds % 60)
+        .toString()
+        .padStart(2, "0");
+
+    document.getElementById("timer").textContent =
+        `${minutes}:${secs}`;
+}
+
+function toggleTimer() {
+    if (timerRunning) {
+        clearInterval(timerInterval);
+        timerRunning = false;
+        document.getElementById("startBtn").textContent = "Start";
+        return;
+    }
+
+    timerRunning = true;
+    document.getElementById("startBtn").textContent = "Pause";
+
+    timerInterval = setInterval(() => {
+        seconds--;
+        updateTimer();
+
+        if (seconds <= 0) {
+            clearInterval(timerInterval);
+            timerRunning = false;
+            seconds = 25 * 60;
+
+            document.getElementById("startBtn").textContent = "Start";
+
+            let sessions =
+                Number(localStorage.getItem("focusforge_sessions") || 0);
+
+            sessions++;
+
+            localStorage.setItem("focusforge_sessions", sessions);
+
+            updateSessionCount();
+
+            alert("Focus session complete. Nice work.");
+        }
+    }, 1000);
+}
+
+function resetTimer() {
+    clearInterval(timerInterval);
+
+    timerRunning = false;
+    seconds = 25 * 60;
+
+    document.getElementById("startBtn").textContent = "Start";
+
+    updateTimer();
+}
+
+const notes = document.getElementById("notes");
+
+notes.value =
+    localStorage.getItem("focusforge_notes") || "";
+
+function saveNotes() {
+    localStorage.setItem("focusforge_notes", notes.value);
+
+    const button = document.querySelector(".save-note");
+
+    button.textContent = "Saved ✓";
+
+    setTimeout(() => {
+        button.textContent = "Save notes";
+    }, 1200);
+}
+
+function updateSessionCount() {
+    document.getElementById("sessions").textContent =
+        localStorage.getItem("focusforge_sessions") || 0;
+}
+
+renderTasks();
+updateTimer();
+updateSessionCount();
+</script>
+
+</body>
+</html>
